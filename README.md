@@ -33,7 +33,7 @@ Installation
 
 This repo comes with a packaged version of the plugin. In order to install the plugin, simply run:
 
-    ./bin/plugin install file:toto
+    ./bin/plugin install file:PATH_TO_GIT_CLONE/target/releases/elasticsearch-analysis-standardcustomwordboundary-0.2.zip
 
 You need to install a version matching your Elasticsearch version:
 
