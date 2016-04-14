@@ -1,4 +1,4 @@
-ElasticSearch Analysis Extensible Standard Tokenizer
+ElasticSearch Analysis Custom Word Boundaries Standard Tokenizer
 =====================================================
 
 Acknowledgement
