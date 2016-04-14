@@ -1,0 +1,24 @@
+{
+    "index":{
+        "analysis":{
+            "tokenizer": {
+                "my_standard_customwb": {
+                    "type": "standard_customwb",
+                    "mappings": [
+                        "@=>EXNL",
+                        "#=>EXNL",
+                        "+=>EXNL",
+                        "-=>EXNL"
+                    ]
+                }
+            },
+            "analyzer" : {
+                "my_analyzer" : {
+                    "type" : "custom",
+                    "tokenizer" : "my_standard_customwb"
+                }
+            }
+
+        }
+    }
+}

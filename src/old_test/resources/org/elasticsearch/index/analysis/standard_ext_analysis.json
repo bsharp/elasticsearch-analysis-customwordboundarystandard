@@ -1,0 +1,33 @@
+{
+    "index":{
+        "analysis":{
+            "analyzer" : {
+                "test_standard_ext" : {
+                   "type":"custom",
+                   "char_filter":[],
+                   "tokenizer": "my_standard_ext_tokenizer",
+                   "filter":["lowercase", "stop"]
+                }            
+            },
+            "analyzer" : {
+                "test_standard" : {
+                   "type":"custom",
+                   "char_filter":[],
+                   "tokenizer": "standard",
+                   "filter":["lowercase", "stop"]
+                }            
+            },
+          	"tokenizer": {
+            		"my_standard_ext_tokenizer": {
+              			"type": "standard_ext",
+              			"mappings": [ 
+                    		"@=>EXNL",
+                    		"#=>EXNL",
+                    		"+=>EXNL",
+                    		"-=>EXNL"
+                  	]
+            		}
+          	}
+        }
+    }
+}

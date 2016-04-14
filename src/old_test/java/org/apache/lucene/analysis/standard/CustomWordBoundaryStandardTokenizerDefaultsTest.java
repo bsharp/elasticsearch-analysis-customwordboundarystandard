@@ -1,0 +1,134 @@
+/*
+ * Licensed to Elasticsearch under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.apache.lucene.analysis.standard;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.util.Version;
+import org.junit.Test;
+import java.util.Locale;
+
+/**
+ * Testing the default word boundary characteristics for many of the punctuation
+ * characters in the ASCII Unicode set
+ */
+public class CustomWordBoundaryStandardTokenizerDefaultsTest {
+
+  @Test
+  public void defaultWordBoundaries_break() throws IOException {
+    String f_text = "%sfoo%sbar%s";
+    char[] charz = new char[] { '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '/', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '`', '{', '|', '}', '~' };
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, args(3, chr));
+      final String[] expected = { "foo", "bar" };
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  @Test
+  public void defaultWordBoundaries_singleQuote() throws IOException {
+    String f_text = "%sfoo%sbar%s";
+    char[] charz = new char[] { '\'' };
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, args(3, chr));
+      final String[] expected = { "foo'bar" };
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  @Test
+  public void defaultWordBoundaries_doubleQuotes() throws IOException {
+    String f_text = "%sfoo%sbar%s";
+    char[] charz = new char[] { '"' };
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, args(3, chr));
+      final String[] expected = { "foo", "bar" };
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  @Test
+  public void defaultWordBoundaries_midLetter() throws IOException {
+    String f_text = "%sfoo%sbar%s %s123%s456%s";
+    char[] charz = new char[] { ':' };
+    // preserved between letters
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, args(6, chr));
+      final String[] expected = { "foo" + chr + "bar", "123", "456" };
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  @Test
+  public void defaultWordBoundaries_midNumber() throws IOException {
+    String f_text = "%sfoo%sbar%s %s123%s456%s";
+    char[] charz = new char[] { ',', ';' };
+    // preserved between numbers
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, args(6, chr));
+      final String[] expected = { "foo", "bar", "123" + chr + "456" };
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  @Test
+  public void defaultWordBoundaries_midNumLetter() throws IOException {
+    String f_text = "%sfoo%sbar%s %s123%s456%s";
+    char[] charz = new char[] { '.' };
+    // preserved between numbers & letters
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, args(6, chr));
+      final String[] expected = { "foo" + chr + "bar", "123" + chr + "456" };
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  @Test
+  public void defaultWordBoundaries_extendedNumLetter() throws IOException {
+    String f_text = "%sfoo%sbar%s";
+    char[] charz = new char[] { '_' };
+    // preserved at the beginning, middle, and end of alpha-numeric characters
+    for (char chr : charz) {
+      final String input = String.format(Locale.US, f_text, chr, chr, chr);
+      final String[] expected = { input }; // e.g. _foo_bar_
+      TestHelper.assertTokens(createCustomWordBoundaryStandardTokenizer(input), expected);
+    }
+  }
+
+  /**
+   * Create an {@link CustomWordBoundaryStandardTokenizer} with no character mapping
+   * overrides
+   */
+  private static Tokenizer createCustomWordBoundaryStandardTokenizer(final String input) {
+    return new CustomWordBoundaryStandardTokenizer(
+                                           new StringReader(input),
+                                           Collections.<Character, Character> emptyMap());
+  }
+
+  private static Object[] args(int length, char chr) {
+    Object[] args = new Object[length];
+    Arrays.fill(args, chr);
+    return args;
+  }
+}
