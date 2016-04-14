@@ -35,7 +35,7 @@ This repo comes with a packaged version of the plugin. In order to install the p
 
     ./bin/plugin install file:PATH_TO_GIT_CLONE/target/releases/elasticsearch-analysis-standardcustomwordboundary-0.2.zip
 
-You need to install a version matching your Elasticsearch version:
+You need to install a version matching your Elasticsearch version (I haven't tested any other version of ES):
 
 |   ElasticSearch       |    Plugin   |   Release date   |
 |-----------------------|-------------|------------------|
